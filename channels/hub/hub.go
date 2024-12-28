@@ -11,9 +11,7 @@ import (
 	"time"
 
 	"github.com/hamstah/gomcp/channels/hub/events"
-	"github.com/hamstah/gomcp/channels/hubinspector"
 	"github.com/hamstah/gomcp/channels/hubmcpserver"
-	"github.com/hamstah/gomcp/channels/hubmuxserver"
 	"github.com/hamstah/gomcp/config"
 	"github.com/hamstah/gomcp/logger"
 	"github.com/hamstah/gomcp/prompts"
@@ -27,8 +25,6 @@ type ModelContextProtocolImpl struct {
 	logging         *config.LoggingInfo
 	toolsRegistry   *tools.ToolsRegistry
 	promptsRegistry *prompts.PromptsRegistry
-	inspector       *hubinspector.Inspector
-	muxServer       *hubmuxserver.MuxServer
 	tools           []config.ToolConfig
 	stateManager    *StateManager
 	events          events.Events
@@ -39,10 +35,8 @@ func newModelContextProtocolServer(
 	serverInfo *config.ServerInfo,
 	logging *config.LoggingInfo,
 	promptsConfig *config.PromptConfig,
-	inspectorConfig *config.InspectorInfo,
 	toolsConfig []config.ToolConfig,
-	loadProxyTools bool,
-	proxyConfig *config.ServerProxyConfig) (*ModelContextProtocolImpl, error) {
+) (*ModelContextProtocolImpl, error) {
 	// we initialize the logger
 	logger, err := logger.NewLogger(logging, false)
 	if err != nil {
@@ -50,7 +44,7 @@ func newModelContextProtocolServer(
 	}
 
 	// Initialize tools registry
-	toolsRegistry := tools.NewToolsRegistry(loadProxyTools, logger)
+	toolsRegistry := tools.NewToolsRegistry(logger)
 
 	// Initialize prompts registry
 	promptsRegistry := prompts.NewEmptyPromptsRegistry()
@@ -71,53 +65,17 @@ func newModelContextProtocolServer(
 	)
 	events := stateManager.AsEvents()
 
-	// Start inspector if enabled
-	var inspectorInstance *hubinspector.Inspector = nil
-	if inspectorConfig != nil && inspectorConfig.Enabled {
-		inspectorInstance = hubinspector.NewInspector(inspectorConfig, logger)
-	}
-
-	// Start multiplexer if enabled
-	var muxServerInstance *hubmuxserver.MuxServer = nil
-	if proxyConfig != nil && proxyConfig.Enabled {
-		muxServerInstance = hubmuxserver.NewMuxServer(proxyConfig.ListenAddress, events, logger)
-	}
-
 	return &ModelContextProtocolImpl{
 		logging:         logging,
 		toolsRegistry:   toolsRegistry,
 		promptsRegistry: promptsRegistry,
-		inspector:       inspectorInstance,
-		muxServer:       muxServerInstance,
-		stateManager:    stateManager,
-		tools:           toolsConfig,
-		events:          events,
-		logger:          logger,
+
+		stateManager: stateManager,
+		tools:        toolsConfig,
+		events:       events,
+		logger:       logger,
 	}, nil
 
-}
-
-func NewHubModelContextProtocolServer(debug bool) (*ModelContextProtocolImpl, error) {
-	conf, err := config.LoadHubConfiguration()
-	if err != nil {
-		return nil, fmt.Errorf("failed to load hub configuration: %v", err)
-	}
-
-	if debug {
-		conf.Logging.WithStderr = true
-	}
-
-	tools := []config.ToolConfig{}
-
-	return newModelContextProtocolServer(
-		&conf.ServerInfo,
-		conf.Logging,
-		conf.Prompts,
-		conf.Inspector,
-		tools,
-		true,
-		conf.Proxy,
-	)
 }
 
 func NewModelContextProtocolServer(configFilePath string) (*ModelContextProtocolImpl, error) {
@@ -131,10 +89,7 @@ func NewModelContextProtocolServer(configFilePath string) (*ModelContextProtocol
 		&conf.ServerInfo,
 		conf.Logging,
 		conf.Prompts,
-		conf.Inspector,
 		conf.Tools,
-		false,
-		nil,
 	)
 
 }
@@ -150,21 +105,11 @@ func (mcp *ModelContextProtocolImpl) StdioTransport() types.Transport {
 	// we create the transport
 	transport := transport.NewStdioTransport(
 		mcp.logging.ProtocolDebugFile,
-		mcp.inspector,
-		mcp.logger)
+		mcp.logger,
+	)
 
 	// we return the transport
 	return transport
-}
-
-func (mcp *ModelContextProtocolImpl) DeclareToolProvider(toolName string, toolInitFunction interface{}) (types.ToolProvider, error) {
-	toolProvider, err := tools.DeclareToolProvider(toolName, toolInitFunction)
-	if err != nil {
-		return nil, fmt.Errorf("failed to declare tool provider %s: %v", toolName, err)
-	}
-	// we keep track of the tool providers added
-	mcp.toolsRegistry.RegisterToolProvider(toolProvider)
-	return toolProvider, nil
 }
 
 // Start starts the server and the inspector
@@ -176,7 +121,14 @@ func (mcp *ModelContextProtocolImpl) Start(transport types.Transport) error {
 
 	// All the tools are initialized, we can prepare the tools registry
 	// so that it can be used by the server
-	err := mcp.toolsRegistry.Prepare(ctx, mcp.tools)
+
+	toolsConfig := make(map[string]config.ToolConfig)
+	for _, tool := range mcp.tools {
+		toolsConfig[tool.Name] = tool
+	}
+
+	// we prepare the tools registry
+	err := mcp.toolsRegistry.Prepare(ctx, toolsConfig)
 	if err != nil {
 		return fmt.Errorf("error preparing tools registry: %s", err)
 	}
@@ -206,26 +158,6 @@ func (mcp *ModelContextProtocolImpl) Start(transport types.Transport) error {
 		}
 	})
 
-	// Start inspector if it was enabled
-	if mcp.inspector != nil {
-		eg.Go(func() error {
-			mcp.logger.Info("[B] Starting inspector", types.LogArg{})
-			err := mcp.inspector.Start(egCtx)
-			if err != nil {
-				// check if the error is because the context was cancelled
-				if errors.Is(err, context.Canceled) {
-					mcp.logger.Info("[B.1] context cancelled, stopping inspector", types.LogArg{})
-				} else {
-					mcp.logger.Error("[B.2] error starting inspector", types.LogArg{
-						"error": err,
-					})
-				}
-			}
-			mcp.logger.Info("[B.3] inspector stopped", types.LogArg{})
-			return err
-		})
-	}
-
 	eg.Go(func() error {
 		mcp.logger.Info("[C] Starting MCP server", types.LogArg{})
 
@@ -252,28 +184,6 @@ func (mcp *ModelContextProtocolImpl) Start(transport types.Transport) error {
 		mcp.logger.Info("[C.3] MCP server stopped", types.LogArg{})
 		return err
 	})
-
-	// Start multiplexer if it was enabled
-	if mcp.muxServer != nil {
-		eg.Go(func() error {
-			mcp.logger.Info("[D] Starting mux server", types.LogArg{})
-			mcp.stateManager.SetMuxServer(mcp.muxServer)
-
-			err := mcp.muxServer.Start(egCtx)
-			if err != nil {
-				// check if the error is because the context was cancelled
-				if errors.Is(err, context.Canceled) {
-					mcp.logger.Info("[D.1] context cancelled, stopping multiplexer", types.LogArg{})
-				} else {
-					mcp.logger.Error("[D.2] error starting multiplexer", types.LogArg{
-						"error": err,
-					})
-				}
-			}
-			mcp.logger.Info("[D.3] mux server stopped", types.LogArg{})
-			return err
-		})
-	}
 
 	if false {
 		eg.Go(func() error {
@@ -324,7 +234,7 @@ func (mcp *ModelContextProtocolImpl) Start(transport types.Transport) error {
 }
 
 func (mcp *ModelContextProtocolImpl) GetToolRegistry() types.ToolRegistry {
-	return mcp
+	return mcp.toolsRegistry
 }
 
 func logGoroutineStacks(logger types.Logger) {

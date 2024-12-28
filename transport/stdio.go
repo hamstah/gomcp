@@ -6,9 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"time"
 
-	"github.com/hamstah/gomcp/channels/hubinspector"
 	"github.com/hamstah/gomcp/types"
 )
 
@@ -16,7 +14,6 @@ type StdioTransport struct {
 	debug             bool
 	isClosed          bool
 	protocolDebugFile string
-	inspector         *hubinspector.Inspector
 	logger            types.Logger
 	onStarted         func()
 	onMessage         func(json.RawMessage)
@@ -24,11 +21,10 @@ type StdioTransport struct {
 	onError           func(error)
 }
 
-func NewStdioTransport(protocolDebugFile string, inspector *hubinspector.Inspector, logger types.Logger) types.Transport {
+func NewStdioTransport(protocolDebugFile string, logger types.Logger) types.Transport {
 	return &StdioTransport{
 		debug:             protocolDebugFile != "",
 		protocolDebugFile: protocolDebugFile,
-		inspector:         inspector,
 		logger:            logger,
 		isClosed:          false,
 	}
@@ -55,14 +51,6 @@ func (t *StdioTransport) Send(message json.RawMessage) error {
 	// Write message followed by newline to stdout
 	if t.debug {
 		t.logProtocolMessages(string(message), "sending")
-	}
-
-	if t.inspector != nil {
-		t.inspector.EnqueueMessage(hubinspector.MessageInfo{
-			Timestamp: time.Now().Format(time.RFC3339),
-			Direction: hubinspector.MessageDirectionResponse,
-			Content:   string(message),
-		})
 	}
 
 	_, err := fmt.Fprintf(os.Stdout, "%s\n", message)
@@ -124,13 +112,6 @@ func (t *StdioTransport) readLoop(ctx context.Context, errChan chan error) {
 						t.logProtocolMessages(line, "receiving")
 					}
 
-					if t.inspector != nil {
-						t.inspector.EnqueueMessage(hubinspector.MessageInfo{
-							Timestamp: time.Now().Format(time.RFC3339),
-							Direction: hubinspector.MessageDirectionRequest,
-							Content:   line,
-						})
-					}
 					t.onMessage(json.RawMessage(line))
 				}
 			}
