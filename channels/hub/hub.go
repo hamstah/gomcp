@@ -157,14 +157,8 @@ func (mcp *ModelContextProtocolImpl) StdioTransport() types.Transport {
 	return transport
 }
 
-func (mcp *ModelContextProtocolImpl) DeclareToolProvider(toolName string, toolInitFunction interface{}) (types.ToolProvider, error) {
-	toolProvider, err := tools.DeclareToolProvider(toolName, toolInitFunction)
-	if err != nil {
-		return nil, fmt.Errorf("failed to declare tool provider %s: %v", toolName, err)
-	}
-	// we keep track of the tool providers added
-	mcp.toolsRegistry.RegisterToolProvider(toolProvider)
-	return toolProvider, nil
+func (mcp *ModelContextProtocolImpl) DeclareToolProvider(toolProvider types.ToolProvider) error {
+	return mcp.toolsRegistry.RegisterToolProvider(toolProvider)
 }
 
 // Start starts the server and the inspector
