@@ -11,26 +11,17 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
-type ToolDefinition struct {
-	ToolName            string
-	ToolHandlerFunction interface{}
-	Description         string
-	InputSchema         *jsonschema.Schema
-	InputTypeName       string
-	// for a tool to be available from a proxy, we need to set the ToolProxyId
-	ToolProxyId string
-}
-
 type ToolProvider struct {
-	toolName         string
-	isDisabled       bool
-	configSchema     *jsonschema.Schema
-	configTypeName   string
-	configType       reflect.Type
-	toolInitFunction interface{}
-	contextType      reflect.Type
-	contextTypeName  string
-	toolDefinitions  []*ToolDefinition
+	toolName                string
+	isDisabled              bool
+	configSchema            *jsonschema.Schema
+	configTypeName          string
+	configType              reflect.Type
+	toolInitFunction        interface{}
+	toolDefinitionsFunction types.ToolDefinitionsFunction
+	contextType             reflect.Type
+	contextTypeName         string
+	toolDefinitions         []*types.ToolDefinition
 	// the tool context retrieve from the tool init function
 	toolContext interface{}
 	// proxy id for proxy tool provider
@@ -48,7 +39,7 @@ func DeclareToolProvider(toolName string, toolInitFunction interface{}) (*ToolPr
 		toolInitFunction: toolInitFunction,
 		contextType:      nil,
 		contextTypeName:  "",
-		toolDefinitions:  []*ToolDefinition{},
+		toolDefinitions:  []*types.ToolDefinition{},
 		proxyId:          "",
 	}
 
@@ -124,14 +115,19 @@ func newProxyToolProvider(proxyId string, proxyName string) (*ToolProvider, erro
 		toolInitFunction: nil,
 		contextType:      nil,
 		contextTypeName:  "",
-		toolDefinitions:  []*ToolDefinition{},
+		toolDefinitions:  []*types.ToolDefinition{},
 		proxyId:          proxyId,
 	}
 	return toolProvider, nil
 }
 
+func (tp *ToolProvider) SetToolDefinitionsFunction(toolDefinitionsFunction types.ToolDefinitionsFunction) error {
+	tp.toolDefinitionsFunction = toolDefinitionsFunction
+	return nil
+}
+
 func (tp *ToolProvider) AddToolDefinition(toolName string, description string, toolHandler interface{}, inputSchema *jsonschema.Schema, inputTypeName string) error {
-	tp.toolDefinitions = append(tp.toolDefinitions, &ToolDefinition{
+	tp.toolDefinitions = append(tp.toolDefinitions, &types.ToolDefinition{
 		ToolName:            toolName,
 		Description:         description,
 		ToolHandlerFunction: toolHandler,
@@ -225,7 +221,7 @@ func (tp *ToolProvider) AddProxyTool(toolName string, description string, inputS
 	}
 
 	// we create a new tool definition
-	tp.toolDefinitions = append(tp.toolDefinitions, &ToolDefinition{
+	tp.toolDefinitions = append(tp.toolDefinitions, &types.ToolDefinition{
 		ToolName:    toolName,
 		Description: description,
 		ToolProxyId: tp.proxyId,

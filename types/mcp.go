@@ -1,7 +1,25 @@
 package types
 
+import (
+	"context"
+
+	"github.com/invopop/jsonschema"
+)
+
+type ToolDefinition struct {
+	ToolName            string
+	ToolHandlerFunction interface{}
+	Description         string
+	InputSchema         *jsonschema.Schema
+	InputTypeName       string
+	// for a tool to be available from a proxy, we need to set the ToolProxyId
+	ToolProxyId string
+}
+type ToolDefinitionsFunction func(ctx context.Context) ([]*ToolDefinition, error)
+
 type ToolProvider interface {
 	AddTool(toolName string, description string, toolHandler interface{}) error
+	SetToolDefinitionsFunction(toolDefinitionsFunction func(ctx context.Context) ([]*ToolDefinition, error)) error
 }
 
 type ToolRegistry interface {

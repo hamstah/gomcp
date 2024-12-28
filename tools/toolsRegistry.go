@@ -14,7 +14,7 @@ type ToolRpcHandler func(input json.RawMessage) (json.RawMessage, error)
 
 type toolProviderPrepared struct {
 	ToolProvider   *ToolProvider
-	ToolDefinition *ToolDefinition
+	ToolDefinition *types.ToolDefinition
 }
 
 type ToolsRegistry struct {
@@ -178,6 +178,20 @@ func (r *ToolsRegistry) Prepare(ctx context.Context, toolConfigs []config.ToolCo
 		if toolProvider.proxyId != "" {
 			continue
 		}
+
+		if toolProvider.toolDefinitionsFunction != nil {
+			// let's get the tool definitions
+			toolDefinitions, err, errCall := utils.CallFunction(toolProvider.toolDefinitionsFunction, ctx)
+			if err != nil {
+				return fmt.Errorf("error getting tool definitions: %w", err)
+			}
+			if errCall != nil {
+				return fmt.Errorf("error calling tool definitions function: %w", errCall)
+			}
+			toolProvider.toolDefinitions = toolDefinitions.([]*types.ToolDefinition)
+		}
+
+		// let's get the tool definitions
 		// for each tool definition, we prepare the function
 		for _, toolDefinition := range toolProvider.toolDefinitions {
 			// check that we don't already have a tool with this name
@@ -201,15 +215,15 @@ func (r *ToolsRegistry) Prepare(ctx context.Context, toolConfigs []config.ToolCo
 	return nil
 }
 
-func (r *ToolsRegistry) GetListOfTools() []*ToolDefinition {
-	tools := make([]*ToolDefinition, 0, len(r.Tools))
+func (r *ToolsRegistry) GetListOfTools() []*types.ToolDefinition {
+	tools := make([]*types.ToolDefinition, 0, len(r.Tools))
 	for _, tool := range r.Tools {
 		tools = append(tools, tool.ToolDefinition)
 	}
 	return tools
 }
 
-func (r *ToolsRegistry) getTool(toolName string) (*ToolDefinition, *ToolProvider, error) {
+func (r *ToolsRegistry) getTool(toolName string) (*types.ToolDefinition, *ToolProvider, error) {
 	tool, ok := r.Tools[toolName]
 	if !ok {
 		return nil, nil, fmt.Errorf("tool %s not found", toolName)
