@@ -6,7 +6,6 @@ import (
 
 	"github.com/hamstah/gomcp/jsonrpc"
 	"github.com/hamstah/gomcp/protocol/mcp"
-	"github.com/hamstah/gomcp/protocol/mux"
 )
 
 type Events interface {
@@ -22,9 +21,6 @@ type Events interface {
 	// receive "tools/call" request
 	EventMcpRequestToolsCall(ctx context.Context, params *mcp.JsonRpcRequestToolsCallParams, reqId *jsonrpc.JsonRpcRequestId)
 
-	// // receive "tools/call" request
-	// EventProxyToolCall(proxyId string, toolName string, toolArgs map[string]interface{}, mcpReqId string)
-
 	// receive "resources/list" request
 	EventMcpRequestResourcesList(params *mcp.JsonRpcRequestResourcesListParams, reqId *jsonrpc.JsonRpcRequestId)
 
@@ -36,16 +32,4 @@ type Events interface {
 
 	// receive "error" notification
 	EventMcpError(code int, message string, data *json.RawMessage, id *jsonrpc.JsonRpcRequestId)
-
-	// EventMuxProxyRegister
-	EventMuxRequestProxyRegister(proxyId string, params *mux.JsonRpcRequestProxyRegisterParams, reqId *jsonrpc.JsonRpcRequestId)
-
-	// EventMuxRequestToolsRegister
-	EventMuxRequestToolsRegister(proxyId string, params *mux.JsonRpcRequestToolsRegisterParams, reqId *jsonrpc.JsonRpcRequestId)
-
-	// EventMuxResponseToolCall
-	EventMuxResponseToolCall(toolsCallResult *mux.JsonRpcResponseToolsCallResult, reqId *jsonrpc.JsonRpcRequestId)
-
-	// EventMuxResponseToolCallError
-	EventMuxResponseToolCallError(error *jsonrpc.JsonRpcError, reqId *jsonrpc.JsonRpcRequestId)
 }
