@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"html/template"
 
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/types"
 )
 
 type PromptsRegistry struct {

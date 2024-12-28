@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/llmcontext/gomcp/config"
-	"github.com/llmcontext/gomcp/types"
-	"github.com/llmcontext/gomcp/utils"
+	"github.com/hamstah/gomcp/config"
+	"github.com/hamstah/gomcp/types"
+	"github.com/hamstah/gomcp/utils"
 )
 
 type ToolRpcHandler func(input json.RawMessage) (json.RawMessage, error)

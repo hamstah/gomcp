@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/llmcontext/gomcp/jsonrpc"
-	"github.com/llmcontext/gomcp/protocol/mcp"
-	"github.com/llmcontext/gomcp/protocol/mux"
+	"github.com/hamstah/gomcp/jsonrpc"
+	"github.com/hamstah/gomcp/protocol/mcp"
+	"github.com/hamstah/gomcp/protocol/mux"
 )
 
 type Events interface {

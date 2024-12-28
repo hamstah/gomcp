@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/llmcontext/gomcp/jsonrpc"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/jsonrpc"
+	"github.com/hamstah/gomcp/types"
 )
 
 type pendingRequest struct {

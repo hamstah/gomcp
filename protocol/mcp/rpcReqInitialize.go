@@ -3,8 +3,8 @@ package mcp
 import (
 	"fmt"
 
-	"github.com/llmcontext/gomcp/jsonrpc"
-	"github.com/llmcontext/gomcp/protocol"
+	"github.com/hamstah/gomcp/jsonrpc"
+	"github.com/hamstah/gomcp/protocol"
 )
 
 // specification

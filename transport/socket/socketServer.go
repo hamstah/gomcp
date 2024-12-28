@@ -4,8 +4,8 @@ import (
 	"context"
 	"net"
 
-	"github.com/llmcontext/gomcp/transport"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/transport"
+	"github.com/hamstah/gomcp/types"
 )
 
 type SocketServer struct {

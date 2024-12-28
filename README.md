@@ -19,7 +19,7 @@ extend their capabilities.
 ## Installation
 
 ```
-go get github.com/llmcontext/gomcp
+go get github.com/hamstah/gomcp
 ```
 
 Direct dependencies:
@@ -186,8 +186,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/llmcontext/gomcp"
-	"github.com/llmcontext/mcpnotion/tools"
+	"github.com/hamstah/gomcp"
+	"github.com/hamstah/mcpnotion/tools"
 )
 
 func main() {
@@ -249,11 +249,11 @@ This file is self-explanatory:
 * the `arguments` section is an array of arguments, each argument is an object with a `name`, a `description` and a `required` field
 * the `prompt` section is the prompt to expose to the LLM. It uses the [Go template syntax](https://pkg.go.dev/text/template) to embed the arguments in the prompt
 
-Check the documentation [here](https://github.com/llmcontext/mcpnotion?tab=readme-ov-file#prompts-access) for more information on how to access the prompts from Claude.
+Check the documentation [here](https://github.com/hamstah/mcpnotion?tab=readme-ov-file#prompts-access) for more information on how to access the prompts from Claude.
 
 ## integration with Claude desktop application
 
-Check the [README](https://github.com/llmcontext/mcpnotion/blob/main/README.md) of the [mcpnotion](https://github.com/llmcontext/mcpnotion) project for more information on how to integrate your MCP server with the Claude desktop application.
+Check the [README](https://github.com/hamstah/mcpnotion/blob/main/README.md) of the [mcpnotion](https://github.com/hamstah/mcpnotion) project for more information on how to integrate your MCP server with the Claude desktop application.
 
 ## Changelog
 
@@ -264,13 +264,13 @@ Check the [README](https://github.com/llmcontext/mcpnotion/blob/main/README.md) 
 - Refactor the JSON protocol messages to handle both client and server messages
 - remove the fifo option for logging
 
-### [0.3.0](https://github.com/llmcontext/gomcp/tree/v0.3.0) - 2024-12-08
+### [0.3.0](https://github.com/hamstah/gomcp/tree/v0.3.0) - 2024-12-08
 
 - Add support for protocol debug file. In the configuration file, set the `logging.protocolDebugFile` field to the path to the file where to write the protocol debug information.
 - Add support for the inspector. In the configuration file, set the `inspector.enabled` and `inspector.listenAddress` fields to set the inspector server address. The inspector is a tool that allows you to inspect the messages exchanged between the MCP server and the LLM. Still in development.
 - Kill the MCP server when the parent process is init. Even though we use a context to stop the server and the goroutines, it seems that the parent process is not always killed when the MCP server is stopped. This is why we now kill the MCP server when the parent process is init.
 
-### [0.2.0](https://github.com/llmcontext/gomcp/tree/v0.2.0) - 2024-12-07
+### [0.2.0](https://github.com/hamstah/gomcp/tree/v0.2.0) - 2024-12-07
 
 - Change signature of `mcp.Start(serverName, serverVersion, transport)` to `mcp.Start(transport)`, the server name and version are now read from the configuration file
 - Add support for prompts stored in a YAML file. File path is read from the configuration file.

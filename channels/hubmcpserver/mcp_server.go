@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 
-	"github.com/llmcontext/gomcp/channels/hub/events"
-	"github.com/llmcontext/gomcp/jsonrpc"
-	"github.com/llmcontext/gomcp/transport"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/channels/hub/events"
+	"github.com/hamstah/gomcp/jsonrpc"
+	"github.com/hamstah/gomcp/transport"
+	"github.com/hamstah/gomcp/types"
 )
 
 type MCPServer struct {

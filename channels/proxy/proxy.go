@@ -7,12 +7,12 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/llmcontext/gomcp/channels/proxy/events"
-	"github.com/llmcontext/gomcp/channels/proxymcpclient"
-	"github.com/llmcontext/gomcp/channels/proxymuxclient"
-	"github.com/llmcontext/gomcp/tools"
-	"github.com/llmcontext/gomcp/transport"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/channels/proxy/events"
+	"github.com/hamstah/gomcp/channels/proxymcpclient"
+	"github.com/hamstah/gomcp/channels/proxymuxclient"
+	"github.com/hamstah/gomcp/tools"
+	"github.com/hamstah/gomcp/transport"
+	"github.com/hamstah/gomcp/types"
 	"golang.org/x/sync/errgroup"
 )
 

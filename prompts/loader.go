@@ -6,7 +6,7 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/llmcontext/gomcp/utils"
+	"github.com/hamstah/gomcp/utils"
 	"gopkg.in/yaml.v3"
 )
 

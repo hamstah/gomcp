@@ -8,7 +8,7 @@ import (
 	"net"
 	"sync"
 
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/types"
 )
 
 type SocketConn struct {

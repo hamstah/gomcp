@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/llmcontext/gomcp/channels/hub/events"
-	"github.com/llmcontext/gomcp/transport/socket"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/channels/hub/events"
+	"github.com/hamstah/gomcp/transport/socket"
+	"github.com/hamstah/gomcp/types"
 )
 
 type MuxServer struct {
