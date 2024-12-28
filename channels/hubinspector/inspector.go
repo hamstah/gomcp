@@ -8,8 +8,8 @@ import (
 	"sync"
 
 	"github.com/gorilla/websocket"
-	"github.com/llmcontext/gomcp/config"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/config"
+	"github.com/hamstah/gomcp/types"
 )
 
 //go:embed html

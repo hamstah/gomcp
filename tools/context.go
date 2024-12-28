@@ -3,7 +3,7 @@ package tools
 import (
 	"context"
 
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/types"
 )
 
 // contextKey is a custom type for context keys to avoid collisions

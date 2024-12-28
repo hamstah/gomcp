@@ -1,4 +1,4 @@
-module github.com/llmcontext/gomcp
+module github.com/hamstah/gomcp
 
 go 1.23.2
 

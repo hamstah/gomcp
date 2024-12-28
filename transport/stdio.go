@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/llmcontext/gomcp/channels/hubinspector"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/channels/hubinspector"
+	"github.com/hamstah/gomcp/types"
 )
 
 type StdioTransport struct {

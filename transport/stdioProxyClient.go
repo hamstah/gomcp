@@ -8,7 +8,7 @@ import (
 	"io"
 	"os/exec"
 
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/types"
 )
 
 type ProxiedMcpServerDescription struct {

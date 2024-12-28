@@ -5,15 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/llmcontext/gomcp/channels/hub/events"
-	"github.com/llmcontext/gomcp/channels/hubmcpserver"
-	"github.com/llmcontext/gomcp/channels/hubmuxserver"
-	"github.com/llmcontext/gomcp/jsonrpc"
-	"github.com/llmcontext/gomcp/prompts"
-	"github.com/llmcontext/gomcp/protocol/mcp"
-	"github.com/llmcontext/gomcp/protocol/mux"
-	"github.com/llmcontext/gomcp/tools"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/channels/hub/events"
+	"github.com/hamstah/gomcp/channels/hubmcpserver"
+	"github.com/hamstah/gomcp/channels/hubmuxserver"
+	"github.com/hamstah/gomcp/jsonrpc"
+	"github.com/hamstah/gomcp/prompts"
+	"github.com/hamstah/gomcp/protocol/mcp"
+	"github.com/hamstah/gomcp/protocol/mux"
+	"github.com/hamstah/gomcp/tools"
+	"github.com/hamstah/gomcp/types"
 )
 
 // MCP client information (eg Claude)

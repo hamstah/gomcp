@@ -3,10 +3,10 @@ package proxymcpclient
 import (
 	"context"
 
-	"github.com/llmcontext/gomcp/channels/proxy/events"
-	"github.com/llmcontext/gomcp/jsonrpc"
-	"github.com/llmcontext/gomcp/transport"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/channels/proxy/events"
+	"github.com/hamstah/gomcp/jsonrpc"
+	"github.com/hamstah/gomcp/transport"
+	"github.com/hamstah/gomcp/types"
 )
 
 type ProxyMcpClient struct {

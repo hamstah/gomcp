@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/llmcontext/gomcp/channels/hub"
+	"github.com/hamstah/gomcp/channels/hub"
 	"github.com/spf13/cobra"
 )
 

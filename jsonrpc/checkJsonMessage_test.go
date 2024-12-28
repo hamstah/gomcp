@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/llmcontext/gomcp/jsonrpc"
+	"github.com/hamstah/gomcp/jsonrpc"
 )
 
 func TestCheckJsonMessage(t *testing.T) {

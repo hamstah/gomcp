@@ -1,9 +1,9 @@
 package proxymuxclient
 
 import (
-	"github.com/llmcontext/gomcp/protocol/mux"
-	"github.com/llmcontext/gomcp/transport"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/protocol/mux"
+	"github.com/hamstah/gomcp/transport"
+	"github.com/hamstah/gomcp/types"
 )
 
 func (c *ProxyMuxClient) handleIncomingMessage(message transport.JsonRpcMessage) error {

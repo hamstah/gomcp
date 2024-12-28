@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/types"
 	"github.com/pterm/pterm"
 )
 

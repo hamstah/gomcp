@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/llmcontext/gomcp/channels/hub"
-	"github.com/llmcontext/gomcp/tools"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/channels/hub"
+	"github.com/hamstah/gomcp/tools"
+	"github.com/hamstah/gomcp/types"
 )
 
 func NewModelContextProtocolServer(configFilePath string) (types.ModelContextProtocol, error) {

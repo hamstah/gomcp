@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/hamstah/gomcp/types"
+	"github.com/hamstah/gomcp/utils"
 	"github.com/invopop/jsonschema"
-	"github.com/llmcontext/gomcp/types"
-	"github.com/llmcontext/gomcp/utils"
 )
 
 type ToolDefinition struct {

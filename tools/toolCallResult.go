@@ -3,7 +3,7 @@ package tools
 import (
 	"encoding/json"
 
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/types"
 )
 
 /*

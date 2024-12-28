@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/llmcontext/gomcp/defaults"
+	"github.com/hamstah/gomcp/defaults"
 )
 
 type ProxyToolsRegistry struct {

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/hamstah/gomcp/utils"
 	"github.com/invopop/jsonschema"
-	"github.com/llmcontext/gomcp/utils"
 )
 
 type ServerConfiguration struct {

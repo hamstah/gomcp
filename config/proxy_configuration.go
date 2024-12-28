@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/hamstah/gomcp/defaults"
+	"github.com/hamstah/gomcp/utils"
 	"github.com/invopop/jsonschema"
-	"github.com/llmcontext/gomcp/defaults"
-	"github.com/llmcontext/gomcp/utils"
 )
 
 // configuration for the proxy

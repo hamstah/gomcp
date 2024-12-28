@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/llmcontext/gomcp/jsonrpc"
-	"github.com/llmcontext/gomcp/protocol/mcp"
-	"github.com/llmcontext/gomcp/transport"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/jsonrpc"
+	"github.com/hamstah/gomcp/protocol/mcp"
+	"github.com/hamstah/gomcp/transport"
+	"github.com/hamstah/gomcp/types"
 )
 
 func (s *MCPServer) handleIncomingMessage(ctx context.Context, message transport.JsonRpcMessage) error {

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/llmcontext/gomcp/config"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/config"
+	"github.com/hamstah/gomcp/types"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )

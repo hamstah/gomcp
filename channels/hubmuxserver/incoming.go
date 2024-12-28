@@ -3,10 +3,10 @@ package hubmuxserver
 import (
 	"fmt"
 
-	"github.com/llmcontext/gomcp/jsonrpc"
-	"github.com/llmcontext/gomcp/protocol/mux"
-	"github.com/llmcontext/gomcp/transport"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/jsonrpc"
+	"github.com/hamstah/gomcp/protocol/mux"
+	"github.com/hamstah/gomcp/transport"
+	"github.com/hamstah/gomcp/types"
 )
 
 func (s *MuxSession) handleIncomingMessage(message transport.JsonRpcMessage) error {

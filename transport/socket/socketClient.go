@@ -3,8 +3,8 @@ package socket
 import (
 	"net"
 
-	"github.com/llmcontext/gomcp/transport"
-	"github.com/llmcontext/gomcp/types"
+	"github.com/hamstah/gomcp/transport"
+	"github.com/hamstah/gomcp/types"
 )
 
 // SocketClient implements the Transport interface using TCP sockets
