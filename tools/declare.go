@@ -22,15 +22,16 @@ type ToolDefinition struct {
 }
 
 type ToolProvider struct {
-	toolName         string
-	isDisabled       bool
-	configSchema     *jsonschema.Schema
-	configTypeName   string
-	configType       reflect.Type
-	toolInitFunction interface{}
-	contextType      reflect.Type
-	contextTypeName  string
-	toolDefinitions  []*ToolDefinition
+	toolName                string
+	isDisabled              bool
+	configSchema            *jsonschema.Schema
+	configTypeName          string
+	configType              reflect.Type
+	toolInitFunction        interface{}
+	toolDefinitionsFunction interface{}
+	contextType             reflect.Type
+	contextTypeName         string
+	toolDefinitions         []*ToolDefinition
 	// the tool context retrieve from the tool init function
 	toolContext interface{}
 	// proxy id for proxy tool provider
@@ -128,6 +129,44 @@ func newProxyToolProvider(proxyId string, proxyName string) (*ToolProvider, erro
 		proxyId:          proxyId,
 	}
 	return toolProvider, nil
+}
+
+func (tp *ToolProvider) SetToolDefinitionsFunction(toolDefinitionsFunction interface{}) error {
+
+	// Validate that toolDefinitionsFunction is a function
+	fnType := reflect.TypeOf(toolDefinitionsFunction)
+	if fnType.Kind() != reflect.Func {
+		return fmt.Errorf("toolDefinitionsFunction must be a function")
+	}
+
+	// the function must have 1 argument - the golang context
+	if fnType.NumIn() != 1 {
+		return fmt.Errorf("toolDefinitionsFunction must have 1 argument")
+	}
+
+	// the argument must be a golang context
+	goContextType := reflect.TypeOf((*context.Context)(nil)).Elem()
+	if fnType.In(0) != goContextType {
+		return fmt.Errorf("toolDefinitionsFunction first argument must be a golang context")
+	}
+
+	// the function must return []*ToolDefinition, error
+	if fnType.NumOut() != 2 {
+		return fmt.Errorf("toolDefinitionsFunction must return []*ToolDefinition, error")
+	}
+
+	// first return value must be []*ToolDefinition
+	if fnType.Out(0).Kind() != reflect.Slice || fnType.Out(0).Elem().Kind() != reflect.Ptr || fnType.Out(0).Elem().Elem().Name() != "ToolDefinition" {
+		return fmt.Errorf("toolDefinitionsFunction first return value must be []*ToolDefinition")
+	}
+
+	// second return value must be error
+	if fnType.Out(1).String() != "error" {
+		return fmt.Errorf("toolDefinitionsFunction second return value must be an error")
+	}
+
+	tp.toolDefinitionsFunction = toolDefinitionsFunction
+	return nil
 }
 
 func (tp *ToolProvider) AddToolDefinition(toolName string, description string, toolHandler interface{}, inputSchema *jsonschema.Schema, inputTypeName string) error {
