@@ -6,24 +6,22 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
-type ToolDefinition struct {
-	ToolName            string
-	ToolHandlerFunction interface{}
-	Description         string
-	InputSchema         *jsonschema.Schema
-	InputTypeName       string
-	// for a tool to be available from a proxy, we need to set the ToolProxyId
-	ToolProxyId string
+type Tool interface {
+	Name() string
+	Description() string
+	InputSchema() *jsonschema.Schema
+	Call(ctx context.Context, args any) (ToolCallResult, error)
 }
-type ToolDefinitionsFunction func(ctx context.Context, toolContext interface{}) ([]*ToolDefinition, error)
 
 type ToolProvider interface {
-	AddTool(toolName string, description string, toolHandler interface{}) error
-	SetToolDefinitionsFunction(toolDefinitionsFunction ToolDefinitionsFunction) error
+	Name() string
+	Init(ctx context.Context, toolContext any) error
+	ListTools(ctx context.Context) ([]Tool, error)
+	GetTool(ctx context.Context, toolName string) (Tool, error)
 }
 
 type ToolRegistry interface {
-	DeclareToolProvider(toolName string, toolInitFunction interface{}) (ToolProvider, error)
+	AddToolProvider(toolProvider ToolProvider) error
 }
 
 type ModelContextProtocol interface {
