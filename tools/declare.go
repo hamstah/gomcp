@@ -130,6 +130,17 @@ func newProxyToolProvider(proxyId string, proxyName string) (*ToolProvider, erro
 	return toolProvider, nil
 }
 
+func (tp *ToolProvider) AddToolDefinition(toolName string, description string, toolHandler interface{}, inputSchema *jsonschema.Schema, inputTypeName string) error {
+	tp.toolDefinitions = append(tp.toolDefinitions, &ToolDefinition{
+		ToolName:            toolName,
+		Description:         description,
+		ToolHandlerFunction: toolHandler,
+		InputSchema:         inputSchema,
+		InputTypeName:       inputTypeName,
+		ToolProxyId:         "",
+	})
+}
+
 func (tp *ToolProvider) AddTool(toolName string, description string, toolHandler interface{}) error {
 	// Validate that toolHandler is a function
 	fnType := reflect.TypeOf(toolHandler)
@@ -179,14 +190,9 @@ func (tp *ToolProvider) AddTool(toolName string, description string, toolHandler
 	}
 
 	// Store the function for later use
-	tp.toolDefinitions = append(tp.toolDefinitions, &ToolDefinition{
-		ToolName:            toolName,
-		Description:         description,
-		ToolHandlerFunction: toolHandler,
-		InputSchema:         inputSchema,
-		InputTypeName:       inputTypeName,
-		ToolProxyId:         "",
-	})
+	if err := tp.AddToolDefinition(toolName, description, toolHandler, inputSchema, inputTypeName); err != nil {
+		return err
+	}
 	return nil
 }
 
